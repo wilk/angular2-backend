@@ -1,2 +1,2 @@
 # angular2-backend
-A backend for an Angular 2 demo
+A backend for an app built with Angular 2
