@@ -57,7 +57,7 @@ app.put('/contacts/:contactId', (req, res) => {
 
     let contact = contacts.findOne({id: parseInt(req.params.contactId)})
 
-    if (contact === null) return res.status(404).send('No contact found')
+    if (contact === null || typeof contact === 'undefined') return res.status(404).send('No contact found')
 
     for (let prop in contactData) {
         if (contact.hasOwnProperty(prop) && (contactData[prop] !== null || typeof contactData[prop] !== 'undefined')) contact[prop] = contactData[prop]
@@ -67,9 +67,11 @@ app.put('/contacts/:contactId', (req, res) => {
 })
 
 app.delete('/contacts/:contactId', (req, res) => {
-    contacts.chain()
-        .find({id: parseInt(req.params.contactId)})
-        .remove()
+    let contact = contacts.findOne({id: parseInt(req.params.contactId)})
+
+    if (contact === null || typeof contact === 'undefined') return res.status(404).send('No contact found')
+
+    contacts.remove(contact)
 
     db.saveDatabase(() => res.end())
 })
