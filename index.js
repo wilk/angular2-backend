@@ -22,7 +22,7 @@ app.get('/contacts', (req, res) => {
 })
 
 app.get('/contacts/:contactId', (req, res) => {
-    let contact = contacts.get(req.params.contactId)
+    let contact = contacts.findOne({id: parseInt(req.params.contactId)})
 
     if (contact === null) return res.status(404).send('No contact found')
 
@@ -55,7 +55,7 @@ app.put('/contacts/:contactId', (req, res) => {
         star: req.body.star || false
     }
 
-    let contact = db.find({id: req.params.contactId})
+    let contact = contacts.findOne({id: parseInt(req.params.contactId)})
 
     if (contact === null) return res.status(404).send('No contact found')
 
@@ -63,13 +63,14 @@ app.put('/contacts/:contactId', (req, res) => {
         if (contact.hasOwnProperty(prop) && (contactData[prop] !== null || typeof contactData[prop] !== 'undefined')) contact[prop] = contactData[prop]
     }
 
-    contact.save()
-
     db.saveDatabase(() => res.json(parseContact(contact)))
 })
 
 app.delete('/contacts/:contactId', (req, res) => {
-    contacts.findAndRemove({id: req.params.contactId})
+    contacts.chain()
+        .find({id: parseInt(req.params.contactId)})
+        .remove()
+
     db.saveDatabase(() => res.end())
 })
 
