@@ -70,7 +70,7 @@ app.delete('/contacts/:contactId', (req, res) => {
     let contact = contacts.findOne({id: parseInt(req.params.contactId)})
 
     if (contact === null || typeof contact === 'undefined') return res.status(404).send('No contact found')
-
+    
     contacts.remove(contact)
 
     db.saveDatabase(() => res.end())
